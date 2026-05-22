@@ -463,7 +463,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────
 // Paste your Apps Script web app URL here after deploying
-var ENDPOINT = 'YOUR_APPS_SCRIPT_ENDPOINT_URL_HERE';
+var ENDPOINT = https://script.google.com/a/macros/warriors.com/s/AKfycbwwEJipUg4fXs7II3KaYqu0Tlc85qebXVRBt1cLrPmjaBk63d_7LWcgvlz4RRFDuCTq/exec;
 var QUEUE_KEY = 'gsw_medical_queue';
 // ──────────────────────────────────────────────────────────────
 
@@ -663,7 +663,7 @@ function enqueue(data) {
 var isSyncing = false;
 
 function flushQueue() {
-  if (isSyncing || ENDPOINT === 'YOUR_APPS_SCRIPT_ENDPOINT_URL_HERE') return;
+  if (isSyncing || ENDPOINT === https://script.google.com/a/macros/warriors.com/s/AKfycbwwEJipUg4fXs7II3KaYqu0Tlc85qebXVRBt1cLrPmjaBk63d_7LWcgvlz4RRFDuCTq/exec) return;
   var q = loadQueue().filter(function(r) { return !r.synced; });
   if (!q.length) { updateSyncStatus(); return; }
   isSyncing = true;
