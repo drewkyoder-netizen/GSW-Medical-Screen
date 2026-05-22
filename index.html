@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GSW Draft Medical Screen</title>
 <style>
-/* ── PASTE YOUR ENDPOINT URL ON LINE 14 OF THE SCRIPT BELOW ── */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#1a3a6b;--gold:#f5a623;
@@ -16,138 +15,142 @@
   --amber-bg:#faeeda;--amber:#854f0b;--amber-b:#ef9f27;
   --red-bg:#fcebeb;--red:#a32d2d;--red-b:#e24b4a;
   --r:10px;--rs:6px;
+  --tap:44px;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);min-height:100vh}
-.fw{max-width:780px;margin:0 auto;padding:1rem 0.75rem 4rem}
+.fw{max-width:780px;margin:0 auto;padding:0 0.75rem 4rem}
 
-/* Sync status bar */
-.sync-bar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:12px;background:var(--surface);border-bottom:1px solid var(--border);gap:10px}
+/* ── Sync bar ── */
+.sync-bar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:12px;background:var(--surface);border-bottom:1px solid var(--border)}
 .sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .sync-dot.ok{background:#3b6d11}
 .sync-dot.pending{background:#854f0b;animation:pulse 1.2s ease-in-out infinite}
 .sync-dot.error{background:#a32d2d}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .sync-text{color:var(--text-muted);flex:1}
-.sync-retry{font-size:11px;padding:3px 10px;border-radius:4px;border:0.5px solid var(--border-med);background:transparent;cursor:pointer;color:var(--text-muted)}
-.sync-retry:hover{background:var(--surface2)}
+.sync-retry{font-size:11px;padding:4px 12px;min-height:30px;border-radius:4px;border:0.5px solid var(--border-med);background:transparent;cursor:pointer;color:var(--text-muted);touch-action:manipulation}
 
-/* Header */
-.fh{background:var(--navy);border-radius:var(--r) var(--r) 0 0;padding:13px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.fh h1{font-size:13px;font-weight:500;color:#fff;line-height:1.3}
+/* ── Header ── */
+.fh{background:var(--navy);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fh h1{font-size:13px;font-weight:500;color:#fff;line-height:1.4}
 .fh .yr{font-size:13px;font-weight:500;color:var(--gold);white-space:nowrap;flex-shrink:0}
 
-/* Player bar */
-.pb{background:var(--surface);border:0.5px solid var(--border);border-top:none;border-radius:0 0 var(--rs) var(--rs);padding:12px 18px;display:grid;grid-template-columns:2fr 1fr 1.5fr 100px 120px;gap:12px;margin-bottom:20px}
-.fg{display:flex;flex-direction:column;gap:4px}
+/* ── Player bar ── */
+.pb{background:var(--surface);border:0.5px solid var(--border);border-top:none;border-radius:0 0 var(--rs) var(--rs);padding:14px 18px;display:grid;grid-template-columns:2fr 1fr 1.5fr;gap:14px;margin-bottom:20px}
+.pb-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:5px}
 .fl{font-size:10px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em}
-.pb input{border:none;border-bottom:1px solid var(--border-med);padding:5px 0;font-size:13px;background:transparent;color:var(--text);width:100%;outline:none}
+.pb input[type=text],.pb input[type=date]{border:none;border-bottom:1px solid var(--border-med);padding:7px 0;font-size:14px;background:transparent;color:var(--text);width:100%;outline:none;-webkit-appearance:none}
 .pb input:focus{border-bottom-color:var(--navy)}
-.hdr{display:flex;gap:12px;align-items:center;padding-top:4px}
-.hdr label{font-size:13px;display:flex;align-items:center;gap:4px;cursor:pointer;color:var(--text)}
 
-/* Section pills + cards */
+/* ── Toggle button group (Handed, Slump) ── */
+.tog-group{display:flex;gap:6px;padding-top:2px}
+.tog-btn{height:var(--tap);min-width:var(--tap);padding:0 14px;border-radius:var(--rs);border:1px solid var(--border-med);background:var(--surface2);font-size:13px;font-weight:500;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all 0.12s;user-select:none}
+.tog-btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tog-btn.pos.on{background:var(--red-bg);color:var(--red);border-color:var(--red-b)}
+.tog-btn.neg.on{background:var(--green-bg);color:var(--green);border-color:var(--green-b)}
+
+/* ── Section pills + cards ── */
 .sp{display:inline-block;background:var(--navy);color:#fff;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
 .card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
-.ch{background:var(--navy);color:#fff;padding:8px 16px;font-size:13px;font-weight:500}
+.ch{background:var(--navy);color:#fff;padding:10px 16px;font-size:13px;font-weight:500}
 .csh{background:var(--gold);padding:5px 16px;font-size:11px;font-weight:500;color:#4a2d00;text-transform:uppercase;letter-spacing:0.05em}
-.cb{padding:12px 16px}
+.cb{padding:14px 16px}
 
-/* ROM rows */
-.rhr{display:grid;gap:5px;margin-bottom:5px}
+/* ── ROM rows ── */
+.rhr{display:grid;gap:5px;margin-bottom:6px}
 .rhr span{font-size:10px;font-weight:500;color:var(--text-muted);text-align:center;padding:4px 2px;background:var(--surface2);border-radius:4px}
 .rhr span:first-child{text-align:left;background:transparent}
-.rr{display:grid;gap:5px;align-items:center;border-bottom:0.5px solid var(--border);padding:5px 0}
+.rr{display:grid;gap:5px;align-items:center;border-bottom:0.5px solid var(--border);padding:6px 0}
 .rr:last-of-type{border-bottom:none}
 .rl{font-size:12px;color:var(--text-muted)}
-.rr select{border:0.5px solid var(--border);border-radius:4px;font-size:11px;padding:5px 6px;background:var(--surface2);color:var(--text);cursor:pointer;width:100%;outline:none;appearance:none;-webkit-appearance:none;text-align:center;transition:border-color 0.15s}
+.rr select{border:0.5px solid var(--border);border-radius:4px;font-size:12px;padding:8px 6px;background:var(--surface2);color:var(--text);cursor:pointer;width:100%;outline:none;appearance:none;-webkit-appearance:none;text-align:center;min-height:38px;transition:border-color 0.15s}
 .rr select:focus{border-color:var(--navy);background:var(--surface)}
 .rr select.changed{background:#e6f1fb;color:#0c447c;border-color:var(--navy);font-weight:500}
 
-/* Pain section */
-.pain-section{padding-top:10px;border-top:0.5px solid var(--border);margin-top:8px;display:flex;flex-direction:column;gap:7px}
-.pain-row{display:flex;align-items:center;gap:6px}
+/* ── Pain section ── */
+.pain-section{padding-top:12px;border-top:0.5px solid var(--border);margin-top:10px;display:flex;flex-direction:column;gap:10px}
+.pain-row{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
 .pain-label{font-size:10px;font-weight:500;color:var(--text-muted);width:36px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.06em}
-.pain-side{font-size:10px;font-weight:600;color:var(--text-dim);width:12px;flex-shrink:0;text-align:right}
-.none-btn{height:26px;min-width:26px;padding:0 9px;border-radius:4px;border:0.5px solid var(--border);background:var(--surface2);font-size:11px;font-weight:500;cursor:pointer;color:var(--text-muted);flex-shrink:0;transition:all 0.12s;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.none-btn.on{border-color:var(--border-med);color:var(--text);font-weight:600}
-.pbs{display:flex;gap:3px;flex-shrink:0}
-.pb2{width:26px;height:26px;border-radius:4px;border:0.5px solid var(--border);background:var(--surface2);font-size:11px;font-weight:500;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.pain-side{font-size:10px;font-weight:600;color:var(--text-dim);width:14px;flex-shrink:0;text-align:right}
+.none-btn{height:36px;min-width:44px;padding:0 10px;border-radius:4px;border:0.5px solid var(--border);background:var(--surface2);font-size:11px;font-weight:500;cursor:pointer;color:var(--text-muted);flex-shrink:0;transition:all 0.12s;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.none-btn.on{border-color:var(--border-med);color:var(--text);font-weight:600;background:var(--surface)}
+.pbs{display:flex;gap:4px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.pb2{width:34px;height:36px;border-radius:4px;border:0.5px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .pb2.al{background:var(--green-bg);color:var(--green);border-color:var(--green-b)}
 .pb2.am{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-b)}
 .pb2.ah{background:var(--red-bg);color:var(--red);border-color:var(--red-b)}
 
-/* Notes */
-.notes-box{width:100%;border:0.5px solid var(--border);border-radius:var(--rs);padding:8px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface2);resize:vertical;min-height:54px;outline:none;margin-top:10px;-webkit-appearance:none;transition:border-color 0.15s}
+/* ── Notes ── */
+.notes-box{width:100%;border:0.5px solid var(--border);border-radius:var(--rs);padding:10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface2);resize:vertical;min-height:60px;outline:none;margin-top:12px;-webkit-appearance:none;transition:border-color 0.15s}
 .notes-box:focus{border-color:var(--navy);background:var(--surface)}
 .notes-box::placeholder{color:var(--text-dim)}
-.pi{border:none;border-bottom:1px solid var(--border-med);font-size:12px;padding:4px;background:transparent;width:100%;color:var(--text);outline:none;text-align:center}
+.pi{border:none;border-bottom:1px solid var(--border-med);font-size:13px;padding:7px 4px;background:transparent;width:100%;color:var(--text);outline:none;text-align:center;-webkit-appearance:none;min-height:36px}
 .pi:focus{border-bottom-color:var(--navy)}
 
-/* Slump +/- */
-.pm-btn{height:26px;padding:0 10px;border-radius:4px;border:0.5px solid var(--border);background:var(--surface2);font-size:13px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all 0.12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.pm-btn.pos{background:var(--red-bg);color:var(--red);border-color:var(--red-b)}
-.pm-btn.neg{background:var(--green-bg);color:var(--green);border-color:var(--green-b)}
-.slump-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding-top:4px}
-.slump-side{display:flex;gap:7px;align-items:center}
-.slump-side-label{font-size:11px;color:var(--text-muted)}
+/* ── Slump test ── */
+.slump-row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;padding-top:6px}
+.slump-side{display:flex;flex-direction:column;gap:6px}
+.slump-side-label{font-size:11px;color:var(--text-muted);font-weight:500}
+.slump-btns{display:flex;gap:6px}
 
-/* Squat */
-.norm-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border)}
+/* ── Squat ── */
+.norm-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);flex-wrap:wrap}
 .norm-row:last-of-type{border-bottom:none}
-.norm-label{font-size:12px;color:var(--text-muted);min-width:140px;flex-shrink:0}
-.norm-btn{height:26px;min-width:26px;padding:0 12px;border-radius:4px;border:0.5px solid var(--border);background:var(--surface2);font-size:11px;font-weight:500;cursor:pointer;color:var(--text-muted);white-space:nowrap;flex-shrink:0;transition:all 0.12s;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.norm-label{font-size:12px;color:var(--text-muted);min-width:130px;flex-shrink:0}
+.norm-btn{height:36px;padding:0 14px;border-radius:var(--rs);border:0.5px solid var(--border);background:var(--surface2);font-size:12px;font-weight:500;cursor:pointer;color:var(--text-muted);white-space:nowrap;flex-shrink:0;transition:all 0.12s;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .norm-btn.on{background:var(--green-bg);color:var(--green);border-color:var(--green-b);font-weight:600}
-.norm-input{flex:1;border:0.5px solid var(--border);border-radius:4px;font-size:12px;padding:5px 8px;background:var(--surface2);color:var(--text);outline:none;min-width:0;-webkit-appearance:none}
+.norm-input{flex:1;min-width:140px;border:0.5px solid var(--border);border-radius:var(--rs);font-size:13px;padding:8px 10px;background:var(--surface2);color:var(--text);outline:none;-webkit-appearance:none;min-height:36px}
 .norm-input:focus{border-color:var(--navy);background:var(--surface)}
 .norm-input::placeholder{color:var(--text-dim)}
 
-/* Big textarea */
-.ta{width:100%;border:0.5px solid var(--border);border-radius:var(--rs);padding:10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface2);resize:vertical;min-height:150px;outline:none;-webkit-appearance:none;transition:border-color 0.15s}
+/* ── Big textarea ── */
+.ta{width:100%;border:0.5px solid var(--border);border-radius:var(--rs);padding:12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--surface2);resize:vertical;min-height:140px;outline:none;-webkit-appearance:none;transition:border-color 0.15s}
 .ta:focus{border-color:var(--navy);background:var(--surface)}
 
-/* Bottom action bar */
-.action-bar{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:0.5px solid var(--border);margin-top:10px;gap:12px;flex-wrap:wrap}
-.cn-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px}
-.cn-field input{border:none;border-bottom:1px solid var(--border-med);font-size:13px;padding:5px 0;background:transparent;color:var(--text);outline:none}
+/* ── Action bar ── */
+.action-bar{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:0.5px solid var(--border);margin-top:12px;gap:12px;flex-wrap:wrap}
+.cn-field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px}
+.cn-field input{border:none;border-bottom:1px solid var(--border-med);font-size:14px;padding:7px 0;background:transparent;color:var(--text);outline:none;-webkit-appearance:none}
 .cn-field input:focus{border-bottom-color:var(--navy)}
 .btn-group{display:flex;gap:8px;flex-shrink:0}
-.btn{border-radius:var(--rs);padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;border:none}
+.btn{border-radius:var(--rs);padding:0 22px;height:var(--tap);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;border:none}
 .btn-save{background:var(--navy);color:#fff}
 .btn-save:hover{background:#244e96}
 .btn-save:disabled{opacity:0.5;cursor:not-allowed}
 .btn-clear{background:var(--surface2);color:var(--text-muted);border:0.5px solid var(--border)}
 .btn-clear:hover{background:#e2e5ed;color:var(--text)}
 
-/* Pelvis desktop/mobile */
+/* ── Pelvis ── */
 .pelv-mobile{display:none}
 .pelv-desktop{display:block}
 
-/* Mobile */
+/* ── Mobile ── */
 @media(max-width:600px){
   .fw{padding:0 0 4rem}
-  .fh{border-radius:0;padding:11px 14px}
-  .pb{grid-template-columns:1fr 1fr;padding:11px 14px;border-radius:0}
-  .pb .fg:first-child{grid-column:1/-1}
-  .cb{padding:10px 12px}
+  .fh{padding:12px 14px}
+  .fh h1{font-size:12px}
+  .pb{grid-template-columns:1fr;padding:12px 14px;border-radius:0}
+  .pb-row2{grid-template-columns:1fr 1fr;gap:12px}
+  .cb{padding:12px 12px}
   .ch,.csh{padding-left:12px;padding-right:12px}
   .rhr{display:none}
-  .rr{display:flex;flex-direction:column;gap:5px;padding:8px 0}
-  .rr-inner{display:flex;gap:4px;width:100%}
-  .rr-inner select,.rr-inner input{flex:1}
-  .rr .rl{font-size:11px;font-weight:500;color:var(--text)}
-  .pain-row{flex-wrap:wrap;row-gap:4px}
-  .pbs{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .norm-row{flex-wrap:wrap;gap:6px}
+  .rr{display:flex;flex-direction:column;gap:6px;padding:10px 0}
+  .rr-inner{display:flex;gap:6px;width:100%}
+  .rr-inner select,.rr-inner input{flex:1;font-size:14px}
+  .rr .rl{font-size:12px;font-weight:500;color:var(--text)}
+  .pain-row{flex-wrap:nowrap}
+  .norm-row{gap:8px}
   .norm-label{min-width:100%;font-size:13px;font-weight:500;color:var(--text)}
   .action-bar{flex-direction:column;align-items:stretch}
   .btn-group{flex-direction:column}
-  .btn{justify-content:center;padding:13px}
+  .btn{justify-content:center;width:100%}
   .pelv-desktop{display:none}
-  .pelv-mobile{display:flex;flex-direction:column;gap:10px}
-  .pelv-field{display:flex;flex-direction:column;gap:4px}
+  .pelv-mobile{display:flex;flex-direction:column;gap:12px}
+  .pelv-field{display:flex;flex-direction:column;gap:5px}
   .pelv-field-label{font-size:10px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em}
   .pelv-field input{text-align:left!important}
-  .sync-bar{border-radius:0}
+  .slump-row{gap:24px}
 }
 @media(min-width:601px){
   .rr-inner{display:contents}
@@ -157,317 +160,336 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <body>
 <div class="fw">
 
-  <!-- ── SYNC STATUS BAR ── -->
-  <div class="sync-bar">
-    <div class="sync-dot ok" id="syncDot"></div>
-    <span class="sync-text" id="syncText">Ready</span>
-    <button class="sync-retry" id="syncRetryBtn" onclick="flushQueue()" style="display:none">Retry sync</button>
-  </div>
+<!-- ── SYNC BAR ── -->
+<div class="sync-bar">
+  <div class="sync-dot ok" id="syncDot"></div>
+  <span class="sync-text" id="syncText">Ready</span>
+  <button class="sync-retry" id="syncRetryBtn" onclick="flushQueue()" style="display:none">Retry sync</button>
+</div>
 
-  <!-- ── HEADER ── -->
-  <div class="fh">
-    <h1>Golden State Warriors · Draft Workout Medical Screen</h1>
-    <span class="yr">2026</span>
-  </div>
+<!-- ── HEADER ── -->
+<div class="fh">
+  <h1>Golden State Warriors · Draft Workout Medical Screen</h1>
+  <span class="yr">2026</span>
+</div>
 
-  <!-- ── PLAYER BAR ── -->
-  <div class="pb">
-    <div class="fg"><span class="fl">Player Name</span><input type="text" id="playerName" placeholder="Last, First" autocomplete="name"></div>
-    <div class="fg"><span class="fl">DOB</span><input type="date" id="dob"></div>
-    <div class="fg"><span class="fl">University / Team</span><input type="text" id="team" placeholder="School or Team"></div>
+<!-- ── PLAYER BAR ── -->
+<div class="pb">
+  <div class="fg"><span class="fl">Player Name</span><input type="text" id="playerName" placeholder="Last, First" autocomplete="name"></div>
+  <div class="fg"><span class="fl">DOB</span><input type="date" id="dob"></div>
+  <div class="fg"><span class="fl">University / Team</span><input type="text" id="team" placeholder="School or Team"></div>
+  <div class="pb-row2">
     <div class="fg"><span class="fl">Date</span><input type="date" id="examDate"></div>
-    <div class="fg"><span class="fl">Handed</span><div class="hdr"><label><input type="radio" name="handed" value="L" id="handedL"> L</label><label><input type="radio" name="handed" value="R" id="handedR"> R</label></div></div>
-  </div>
-
-  <!-- ── INJURY HISTORY ── -->
-  <div class="sp">Relevant Injury History</div>
-  <div class="card">
-    <div class="ch">Injury History</div>
-    <div class="cb"><textarea class="ta" id="injuryHistory" placeholder="Document relevant injury history…"></textarea></div>
-  </div>
-
-  <!-- ── HEAD / NECK ── -->
-  <div class="sp" style="margin-top:6px">Head / Neck</div>
-  <div class="card">
-    <div class="ch">Cervical Spine</div><div class="csh">ROM</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:130px 1fr 1fr 1fr 1fr 1fr">
-        <span></span><span>Flexion</span><span>Extension</span><span>Flex Quad</span><span>Ext Quad</span><span>Foraminal</span>
+    <div class="fg">
+      <span class="fl">Handed</span>
+      <div class="tog-group">
+        <button class="tog-btn" id="handed_L" onclick="togHanded('L')">L</button>
+        <button class="tog-btn" id="handed_R" onclick="togHanded('R')">R</button>
       </div>
-      <div class="rr" style="grid-template-columns:130px 1fr 1fr 1fr 1fr 1fr">
-        <span class="rl">ROM</span>
-        <div class="rr-inner">
-          <select id="cerv_flex" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="cerv_ext"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="cerv_fq"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="cerv_eq"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="cerv_fc"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+    </div>
+  </div>
+</div>
+
+<!-- ── INJURY HISTORY ── -->
+<div class="sp">Relevant Injury History</div>
+<div class="card">
+  <div class="ch">Injury History</div>
+  <div class="cb"><textarea class="ta" id="injuryHistory" placeholder="Document relevant injury history…"></textarea></div>
+</div>
+
+<!-- ── HEAD / NECK ── -->
+<div class="sp" style="margin-top:6px">Head / Neck</div>
+<div class="card">
+  <div class="ch">Cervical Spine</div><div class="csh">ROM</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:120px 1fr 1fr 1fr 1fr 1fr">
+      <span></span><span>Flexion</span><span>Extension</span><span>Flex Quad</span><span>Ext Quad</span><span>Foraminal</span>
+    </div>
+    <div class="rr" style="grid-template-columns:120px 1fr 1fr 1fr 1fr 1fr">
+      <span class="rl">ROM</span>
+      <div class="rr-inner">
+        <select id="cerv_flex" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="cerv_ext"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="cerv_fq"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="cerv_eq"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="cerv_fc"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+      </div>
+    </div>
+    <div class="pain-section" id="cerv_ps"></div>
+    <textarea class="notes-box" id="notes_cerv" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<!-- ── TRUNK ── -->
+<div class="sp" style="margin-top:6px">Trunk</div>
+<div class="card">
+  <div class="ch">Thoracic Spine</div><div class="csh">ROM</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:120px 1fr 1fr 1fr">
+      <span></span><span>Flexion</span><span>Extension</span><span>Rotation</span>
+    </div>
+    <div class="rr" style="grid-template-columns:120px 1fr 1fr 1fr">
+      <span class="rl">ROM</span>
+      <div class="rr-inner">
+        <select id="thor_flex" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="thor_ext"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="thor_rot"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+      </div>
+    </div>
+    <div class="pain-section" id="thor_ps"></div>
+    <textarea class="notes-box" id="notes_thor" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch">Lumbar Spine</div><div class="csh">ROM</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:120px 1fr 1fr 1fr 1fr">
+      <span></span><span>Flexion</span><span>Extension</span><span>Flex Quad</span><span>Ext Quad</span>
+    </div>
+    <div class="rr" style="grid-template-columns:120px 1fr 1fr 1fr 1fr">
+      <span class="rl">ROM</span>
+      <div class="rr-inner">
+        <select id="lumb_flex"     onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="lumb_ext"      onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="lumb_fq"       onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="lumb_ext_quad" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+      </div>
+    </div>
+    <div class="rr" style="padding:10px 0;border-bottom:none;display:block">
+      <span class="rl" style="display:block;margin-bottom:8px;font-weight:500">Slump Test</span>
+      <div class="slump-row">
+        <div class="slump-side">
+          <span class="slump-side-label">Right</span>
+          <div class="slump-btns">
+            <button class="tog-btn pos" id="slump_r_pos" onclick="togSlump('slump_r','pos')">+</button>
+            <button class="tog-btn neg" id="slump_r_neg" onclick="togSlump('slump_r','neg')">−</button>
+          </div>
+        </div>
+        <div class="slump-side">
+          <span class="slump-side-label">Left</span>
+          <div class="slump-btns">
+            <button class="tog-btn pos" id="slump_l_pos" onclick="togSlump('slump_l','pos')">+</button>
+            <button class="tog-btn neg" id="slump_l_neg" onclick="togSlump('slump_l','neg')">−</button>
+          </div>
         </div>
       </div>
-      <div class="pain-section" id="cerv_ps"></div>
-      <textarea class="notes-box" id="notes_cerv" placeholder="Notes…"></textarea>
     </div>
+    <div class="pain-section" id="lumb_ps"></div>
+    <textarea class="notes-box" id="notes_lumb" placeholder="Notes…"></textarea>
   </div>
+</div>
 
-  <!-- ── TRUNK ── -->
-  <div class="sp" style="margin-top:6px">Trunk</div>
-  <div class="card">
-    <div class="ch">Thoracic Spine</div><div class="csh">ROM</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:130px 1fr 1fr 1fr">
-        <span></span><span>Flexion</span><span>Extension</span><span>Rotation</span>
-      </div>
-      <div class="rr" style="grid-template-columns:130px 1fr 1fr 1fr">
-        <span class="rl">ROM</span>
-        <div class="rr-inner">
-          <select id="thor_flex" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="thor_ext"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="thor_rot"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-        </div>
-      </div>
-      <div class="pain-section" id="thor_ps"></div>
-      <textarea class="notes-box" id="notes_thor" placeholder="Notes…"></textarea>
+<!-- ── SHOULDER ── -->
+<div class="sp" style="margin-top:6px">Shoulder</div>
+<div class="card">
+  <div class="ch">Shoulder</div><div class="csh">ROM</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:140px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Elevation</span><div class="rr-inner"><select id="sh_elev_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_elev_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Functional IR</span><div class="rr-inner"><select id="sh_fir_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_fir_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Functional ER</span><div class="rr-inner"><select id="sh_fer_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_fer_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Impingement</span><div class="rr-inner"><select id="sh_imp_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_imp_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="sh_r_ps"></div>
+    <textarea class="notes-box" id="notes_sh_r" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch">Shoulder</div><div class="csh">Strength</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:140px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Forward Flexion</span><div class="rr-inner"><select id="sh_ff_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_ff_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Abduction</span><div class="rr-inner"><select id="sh_abd_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_abd_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Internal Rotation</span><div class="rr-inner"><select id="sh_ir_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_ir_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">External Rotation</span><div class="rr-inner"><select id="sh_er_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_er_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="sh_s_ps"></div>
+    <textarea class="notes-box" id="notes_sh_s" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<!-- ── WRIST ── -->
+<div class="sp" style="margin-top:6px">Wrist</div>
+<div class="card">
+  <div class="ch">Wrist</div><div class="csh">ROM · Strength</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:90px 1fr 1fr 1fr 1fr 1fr 1fr">
+      <span></span><span>Flex R</span><span>Flex L</span><span>Ext R</span><span>Ext L</span><span>Str R</span><span>Str L</span>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="ch">Lumbar Spine</div><div class="csh">ROM</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:130px 1fr 1fr 1fr 1fr">
-        <span></span><span>Flexion</span><span>Extension</span><span>Flex Quad</span><span>Ext Quad</span>
+    <div class="rr" style="grid-template-columns:90px 1fr 1fr 1fr 1fr 1fr 1fr">
+      <span class="rl">Findings</span>
+      <div class="rr-inner">
+        <select id="wr_flex_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_flex_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_ext_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_ext_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_str_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_str_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
       </div>
-      <div class="rr" style="grid-template-columns:130px 1fr 1fr 1fr 1fr">
-        <span class="rl">ROM</span>
-        <div class="rr-inner">
-          <select id="lumb_flex"     onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="lumb_ext"      onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="lumb_fq"       onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="lumb_ext_quad" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-        </div>
-      </div>
-      <div class="rr" style="padding:8px 0;border-bottom:none">
-        <span class="rl" style="display:block;margin-bottom:6px">Slump Test</span>
-        <div class="slump-row">
-          <div class="slump-side"><span class="slump-side-label">Right</span><button class="pm-btn" id="slump_r_pos" onclick="tPM('slump_r')">+</button><button class="pm-btn" id="slump_r_neg" onclick="tPM('slump_r','neg')">−</button></div>
-          <div class="slump-side"><span class="slump-side-label">Left</span><button class="pm-btn" id="slump_l_pos" onclick="tPM('slump_l')">+</button><button class="pm-btn" id="slump_l_neg" onclick="tPM('slump_l','neg')">−</button></div>
-        </div>
-      </div>
-      <div class="pain-section" id="lumb_ps"></div>
-      <textarea class="notes-box" id="notes_lumb" placeholder="Notes…"></textarea>
     </div>
+    <div class="pain-section" id="wr_ps"></div>
+    <textarea class="notes-box" id="notes_wr" placeholder="Notes…"></textarea>
   </div>
+</div>
 
-  <!-- ── SHOULDER ── -->
-  <div class="sp" style="margin-top:6px">Shoulder</div>
-  <div class="card">
-    <div class="ch">Shoulder</div><div class="csh">ROM</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:140px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Elevation</span><div class="rr-inner"><select id="sh_elev_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_elev_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Functional IR</span><div class="rr-inner"><select id="sh_fir_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_fir_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Functional ER</span><div class="rr-inner"><select id="sh_fer_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_fer_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Impingement</span><div class="rr-inner"><select id="sh_imp_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_imp_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="sh_r_ps"></div>
-      <textarea class="notes-box" id="notes_sh_r" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ch">Shoulder</div><div class="csh">Strength</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:140px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Forward Flexion</span><div class="rr-inner"><select id="sh_ff_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_ff_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Abduction</span><div class="rr-inner"><select id="sh_abd_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_abd_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">Internal Rotation</span><div class="rr-inner"><select id="sh_ir_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_ir_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:140px 1fr 1fr"><span class="rl">External Rotation</span><div class="rr-inner"><select id="sh_er_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="sh_er_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="sh_s_ps"></div>
-      <textarea class="notes-box" id="notes_sh_s" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <!-- ── WRIST ── -->
-  <div class="sp" style="margin-top:6px">Wrist</div>
-  <div class="card">
-    <div class="ch">Wrist</div><div class="csh">ROM · Strength</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:100px 1fr 1fr 1fr 1fr 1fr 1fr">
-        <span></span><span>Flex R</span><span>Flex L</span><span>Ext R</span><span>Ext L</span><span>Str R</span><span>Str L</span>
-      </div>
-      <div class="rr" style="grid-template-columns:100px 1fr 1fr 1fr 1fr 1fr 1fr">
+<!-- ── PELVIS ── -->
+<div class="sp" style="margin-top:6px">Pelvis</div>
+<div class="card">
+  <div class="ch">Pelvic Alignment</div><div class="csh">Positional Assessment</div>
+  <div class="cb">
+    <div class="pelv-desktop">
+      <div class="rhr" style="grid-template-columns:140px 1fr 1fr 1fr"><span></span><span>Interpretation</span><span>True LLD</span><span>Apparent LLD</span></div>
+      <div class="rr" style="grid-template-columns:140px 1fr 1fr 1fr">
         <span class="rl">Findings</span>
-        <div class="rr-inner">
-          <select id="wr_flex_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="wr_flex_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="wr_ext_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="wr_ext_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="wr_str_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="wr_str_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-        </div>
+        <input class="pi" id="pelv_interp" type="text" placeholder="Neutral / Ant / Post tilt" style="text-align:left">
+        <input class="pi" id="pelv_true"   type="text" placeholder="cm">
+        <input class="pi" id="pelv_appar"  type="text" placeholder="cm">
       </div>
-      <div class="pain-section" id="wr_ps"></div>
-      <textarea class="notes-box" id="notes_wr" placeholder="Notes…"></textarea>
     </div>
-  </div>
-
-  <!-- ── PELVIS ── -->
-  <div class="sp" style="margin-top:6px">Pelvis</div>
-  <div class="card">
-    <div class="ch">Pelvic Alignment</div><div class="csh">Positional Assessment</div>
-    <div class="cb">
-      <div class="pelv-desktop">
-        <div class="rhr" style="grid-template-columns:150px 1fr 1fr 1fr"><span></span><span>Interpretation</span><span>True LLD</span><span>Apparent LLD</span></div>
-        <div class="rr" style="grid-template-columns:150px 1fr 1fr 1fr">
-          <span class="rl">Findings</span>
-          <input class="pi" id="pelv_interpretation" type="text" placeholder="Neutral / Ant / Post tilt" style="text-align:left">
-          <input class="pi" id="pelv_true_lld" type="text" placeholder="cm">
-          <input class="pi" id="pelv_apparent_lld" type="text" placeholder="cm">
-        </div>
+    <div class="pelv-mobile">
+      <div class="pelv-field"><span class="pelv-field-label">Interpretation</span><input class="pi" id="pelv_interp_m" type="text" placeholder="Neutral / Ant / Post tilt" style="text-align:left"></div>
+      <div style="display:flex;gap:14px">
+        <div class="pelv-field" style="flex:1"><span class="pelv-field-label">True LLD</span><input class="pi" id="pelv_true_m" type="text" placeholder="cm"></div>
+        <div class="pelv-field" style="flex:1"><span class="pelv-field-label">Apparent LLD</span><input class="pi" id="pelv_appar_m" type="text" placeholder="cm"></div>
       </div>
-      <div class="pelv-mobile">
-        <div class="pelv-field"><span class="pelv-field-label">Interpretation</span><input class="pi" id="pelv_interpretation_m" type="text" placeholder="Neutral / Ant / Post tilt" style="text-align:left"></div>
-        <div style="display:flex;gap:12px">
-          <div class="pelv-field" style="flex:1"><span class="pelv-field-label">True LLD</span><input class="pi" id="pelv_true_lld_m" type="text" placeholder="cm"></div>
-          <div class="pelv-field" style="flex:1"><span class="pelv-field-label">Apparent LLD</span><input class="pi" id="pelv_apparent_lld_m" type="text" placeholder="cm"></div>
-        </div>
+    </div>
+    <div class="pain-section" id="pelv_ps"></div>
+    <textarea class="notes-box" id="notes_pelv" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<!-- ── HIP ── -->
+<div class="sp" style="margin-top:6px">Hip</div>
+<div class="card">
+  <div class="ch">Hip</div><div class="csh">ROM · Special Tests</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Internal Rotation</span><div class="rr-inner"><select id="hip_ir_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_ir_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">External Rotation</span><div class="rr-inner"><select id="hip_er_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_er_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">FABER</span><div class="rr-inner"><select id="hip_fab_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_fab_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">FADDIR</span><div class="rr-inner"><select id="hip_fad_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_fad_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Thomas — Hip</span><div class="rr-inner"><select id="hip_th_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_th_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Thomas — Knee</span><div class="rr-inner"><select id="hip_tk_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_tk_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="hi_r_ps"></div>
+    <textarea class="notes-box" id="notes_hi_r" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch">Hip</div><div class="csh">Strength</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Flexion</span><div class="rr-inner"><select id="hip_sf_r"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_sf_l"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Supine Adduction</span><div class="rr-inner"><select id="hip_sadd_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_sadd_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Sideline Abduction</span><div class="rr-inner"><select id="hip_sabd_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_sabd_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="hi_s_ps"></div>
+    <textarea class="notes-box" id="notes_hi_s" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<!-- ── KNEE ── -->
+<div class="sp" style="margin-top:6px">Knee</div>
+<div class="card">
+  <div class="ch">Quadricep</div><div class="csh">Length · Strength</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Length (prone)</span><div class="rr-inner"><select id="quad_len_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="quad_len_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Strength</span><div class="rr-inner"><select id="quad_str_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="quad_str_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="qu_ps"></div>
+    <textarea class="notes-box" id="notes_qu" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch">Hamstring</div><div class="csh">Length · Strength</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Length</span><div class="rr-inner"><select id="ham_len_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ham_len_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Strength</span><div class="rr-inner"><select id="ham_str_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ham_str_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="ha_ps"></div>
+    <textarea class="notes-box" id="notes_ha" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<!-- ── ANKLE ── -->
+<div class="sp" style="margin-top:6px">Ankle</div>
+<div class="card">
+  <div class="ch">Ankle</div><div class="csh">ROM · Strength</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Knee to Wall</span><div class="rr-inner"><input class="pi" id="ank_ktw_r" type="text" placeholder="cm"><input class="pi" id="ank_ktw_l" type="text" placeholder="cm"></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">ROM</span><div class="rr-inner"><select id="ank_rom_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ank_rom_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Eversion Strength</span><div class="rr-inner"><select id="ank_ev_r"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ank_ev_l"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Inversion Strength</span><div class="rr-inner"><select id="ank_inv_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ank_inv_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
+    <div class="pain-section" id="an_ps"></div>
+    <textarea class="notes-box" id="notes_an" placeholder="Notes…"></textarea>
+  </div>
+</div>
+
+<!-- ── MOVEMENT SCREEN ── -->
+<div class="sp" style="margin-top:6px">Movement Screen</div>
+<div class="card">
+  <div class="ch">Resisted Quadrants</div><div class="csh">Strength Assessment</div>
+  <div class="cb">
+    <div class="rhr" style="grid-template-columns:110px 1fr 1fr 1fr 1fr">
+      <span></span><span>L Ext Quad</span><span>L Flex Quad</span><span>R Ext Quad</span><span>R Flex Quad</span>
+    </div>
+    <div class="rr" style="grid-template-columns:110px 1fr 1fr 1fr 1fr">
+      <span class="rl">Strength</span>
+      <div class="rr-inner">
+        <select id="rq_leq" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="rq_lfq" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="rq_req" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="rq_rfq" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
       </div>
-      <div class="pain-section" id="pelv_ps"></div>
-      <textarea class="notes-box" id="notes_pelv" placeholder="Notes…"></textarea>
     </div>
+    <div class="pain-section" id="rq_ps"></div>
+    <textarea class="notes-box" id="notes_rq" placeholder="Notes…"></textarea>
   </div>
+</div>
 
-  <!-- ── HIP ── -->
-  <div class="sp" style="margin-top:6px">Hip</div>
-  <div class="card">
-    <div class="ch">Hip</div><div class="csh">ROM · Special Tests</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Internal Rotation</span><div class="rr-inner"><select id="hip_ir_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_ir_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">External Rotation</span><div class="rr-inner"><select id="hip_er_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_er_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">FABER</span><div class="rr-inner"><select id="hip_fab_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_fab_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">FADDIR</span><div class="rr-inner"><select id="hip_fad_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_fad_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Thomas — Hip</span><div class="rr-inner"><select id="hip_th_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_th_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Thomas — Knee</span><div class="rr-inner"><select id="hip_tk_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_tk_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="hi_r_ps"></div>
-      <textarea class="notes-box" id="notes_hi_r" placeholder="Notes…"></textarea>
-    </div>
+<div class="card">
+  <div class="ch">Squat Assessment</div><div class="csh">Findings</div>
+  <div class="cb">
+    <div class="norm-row"><span class="norm-label">DL Squat</span><button class="norm-btn" id="norm_dl" onclick="tN('dl')">Normal</button><input class="norm-input" type="text" placeholder="Abnormal findings…" id="abn_dl"></div>
+    <div class="norm-row"><span class="norm-label">SL Squat — Right</span><button class="norm-btn" id="norm_slr" onclick="tN('slr')">Normal</button><input class="norm-input" type="text" placeholder="Abnormal findings…" id="abn_slr"></div>
+    <div class="norm-row"><span class="norm-label">SL Squat — Left</span><button class="norm-btn" id="norm_sll" onclick="tN('sll')">Normal</button><input class="norm-input" type="text" placeholder="Abnormal findings…" id="abn_sll"></div>
+    <div class="pain-section" id="sq_ps"></div>
+    <textarea class="notes-box" id="notes_sq" placeholder="Notes…"></textarea>
   </div>
+</div>
 
-  <div class="card">
-    <div class="ch">Hip</div><div class="csh">Strength</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Flexion</span><div class="rr-inner"><select id="hip_sf_r"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_sf_l"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Supine Adduction</span><div class="rr-inner"><select id="hip_sadd_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_sadd_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Sideline Abduction</span><div class="rr-inner"><select id="hip_sabd_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="hip_sabd_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="hi_s_ps"></div>
-      <textarea class="notes-box" id="notes_hi_s" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <!-- ── KNEE ── -->
-  <div class="sp" style="margin-top:6px">Knee</div>
-  <div class="card">
-    <div class="ch">Quadricep</div><div class="csh">Length · Strength</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Length (prone)</span><div class="rr-inner"><select id="quad_len_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="quad_len_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Strength</span><div class="rr-inner"><select id="quad_str_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="quad_str_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="qu_ps"></div>
-      <textarea class="notes-box" id="notes_qu" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ch">Hamstring</div><div class="csh">Length · Strength</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Length</span><div class="rr-inner"><select id="ham_len_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ham_len_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Strength</span><div class="rr-inner"><select id="ham_str_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ham_str_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="ha_ps"></div>
-      <textarea class="notes-box" id="notes_ha" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <!-- ── ANKLE ── -->
-  <div class="sp" style="margin-top:6px">Ankle</div>
-  <div class="card">
-    <div class="ch">Ankle</div><div class="csh">ROM · Strength</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:150px 1fr 1fr"><span></span><span>Right</span><span>Left</span></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Knee to Wall</span><div class="rr-inner"><input class="pi" id="ank_ktw_r" type="text" placeholder="cm"><input class="pi" id="ank_ktw_l" type="text" placeholder="cm"></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">ROM</span><div class="rr-inner"><select id="ank_rom_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ank_rom_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Eversion Strength</span><div class="rr-inner"><select id="ank_ev_r"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ank_ev_l"   onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="rr" style="grid-template-columns:150px 1fr 1fr"><span class="rl">Inversion Strength</span><div class="rr-inner"><select id="ank_inv_r"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select><select id="ank_inv_l"  onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div>
-      <div class="pain-section" id="an_ps"></div>
-      <textarea class="notes-box" id="notes_an" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <!-- ── MOVEMENT SCREEN ── -->
-  <div class="sp" style="margin-top:6px">Movement Screen</div>
-  <div class="card">
-    <div class="ch">Resisted Quadrants</div><div class="csh">Strength Assessment</div>
-    <div class="cb">
-      <div class="rhr" style="grid-template-columns:120px 1fr 1fr 1fr 1fr">
-        <span></span><span>L Ext Quad</span><span>L Flex Quad</span><span>R Ext Quad</span><span>R Flex Quad</span>
-      </div>
-      <div class="rr" style="grid-template-columns:120px 1fr 1fr 1fr 1fr">
-        <span class="rl">Strength</span>
-        <div class="rr-inner">
-          <select id="rq_leq" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="rq_lfq" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="rq_req" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-          <select id="rq_rfq" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
-        </div>
-      </div>
-      <div class="pain-section" id="rq_ps"></div>
-      <textarea class="notes-box" id="notes_rq" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="ch">Squat Assessment</div><div class="csh">Findings</div>
-    <div class="cb">
-      <div class="norm-row"><span class="norm-label">DL Squat</span><button class="norm-btn" id="norm_dl" onclick="tN('dl')">Normal</button><input class="norm-input" type="text" placeholder="Abnormal findings…" id="abn_dl"></div>
-      <div class="norm-row"><span class="norm-label">SL Squat — Right</span><button class="norm-btn" id="norm_slr" onclick="tN('slr')">Normal</button><input class="norm-input" type="text" placeholder="Abnormal findings…" id="abn_slr"></div>
-      <div class="norm-row"><span class="norm-label">SL Squat — Left</span><button class="norm-btn" id="norm_sll" onclick="tN('sll')">Normal</button><input class="norm-input" type="text" placeholder="Abnormal findings…" id="abn_sll"></div>
-      <div class="pain-section" id="sq_ps"></div>
-      <textarea class="notes-box" id="notes_sq" placeholder="Notes…"></textarea>
-    </div>
-  </div>
-
-  <!-- ── CLINICAL SUMMARY ── -->
-  <div class="sp" style="margin-top:6px">Clinical Summary</div>
-  <div class="card">
-    <div class="ch">Clinical Summary &amp; Recommendations</div>
-    <div class="cb">
-      <textarea class="ta" id="clinicalSummary" placeholder="Clinical summary and recommendations…"></textarea>
-      <div class="action-bar">
-        <div class="cn-field"><span class="fl">Clinician</span><input type="text" id="clinician" placeholder="Print name" autocomplete="name"></div>
-        <div class="btn-group">
-          <button class="btn btn-clear" onclick="clearForm()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.99"/></svg>
-            Clear Form
-          </button>
-          <button class="btn btn-save" id="saveBtn" onclick="saveRecord()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Save Record
-          </button>
-        </div>
+<!-- ── CLINICAL SUMMARY ── -->
+<div class="sp" style="margin-top:6px">Clinical Summary</div>
+<div class="card">
+  <div class="ch">Clinical Summary &amp; Recommendations</div>
+  <div class="cb">
+    <textarea class="ta" id="clinicalSummary" placeholder="Clinical summary and recommendations…"></textarea>
+    <div class="action-bar">
+      <div class="cn-field"><span class="fl">Clinician</span><input type="text" id="clinician" placeholder="Print name" autocomplete="name"></div>
+      <div class="btn-group">
+        <button class="btn btn-clear" onclick="clearForm()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.99"/></svg>
+          Clear Form
+        </button>
+        <button class="btn btn-save" id="saveBtn" onclick="saveRecord()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Record
+        </button>
       </div>
     </div>
   </div>
+</div>
 
 </div><!-- /.fw -->
 
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────
-// Paste your Apps Script web app URL here after deploying
-var ENDPOINT = https://script.google.com/a/macros/warriors.com/s/AKfycbwwEJipUg4fXs7II3KaYqu0Tlc85qebXVRBt1cLrPmjaBk63d_7LWcgvlz4RRFDuCTq/exec;
+var ENDPOINT  = 'YOUR_APPS_SCRIPT_ENDPOINT_URL_HERE';
 var QUEUE_KEY = 'gsw_medical_queue';
 // ──────────────────────────────────────────────────────────────
 
-// Pain section configs: id -> sides
+// Pain section configs
 var PC = {
   cerv_ps:['L','C','R'], thor_ps:['L','C','R'], lumb_ps:['L','C','R'],
   sh_r_ps:['L','R'],     sh_s_ps:['L','R'],     wr_ps:['L','R'],
@@ -477,346 +499,253 @@ var PC = {
   rq_ps:['L','R'],       sq_ps:['L','C','R']
 };
 
-var pS={}, nS={}, slS={}, norS={};
+// State objects
+var painSt  = {};   // pain scores keyed by section_side
+var noneSt  = {};   // none-selected state
+var slumpSt = {};   // slump_r / slump_l -> 'pos' | 'neg' | null
+var normSt  = {};   // squat normal toggles
+var handedSt = '';  // 'L' | 'R' | ''
 
-// ── Build pain sections ───────────────────────────────────────
+// ── Handed toggle ─────────────────────────────────────────────
+function togHanded(side) {
+  handedSt = (handedSt === side) ? '' : side;
+  ['L','R'].forEach(function(s) {
+    var b = document.getElementById('handed_' + s);
+    if (b) b.classList.toggle('on', handedSt === s);
+  });
+}
+
+// ── Slump toggle ──────────────────────────────────────────────
+function togSlump(id, type) {
+  var cur = slumpSt[id];
+  // clicking same button again deselects
+  slumpSt[id] = (cur === type) ? null : type;
+  ['pos','neg'].forEach(function(t) {
+    var b = document.getElementById(id + '_' + t);
+    if (b) b.classList.toggle('on', slumpSt[id] === t);
+  });
+}
+
+// ── Pain section builder ──────────────────────────────────────
 function bPS(cid, sides) {
   var c = document.getElementById(cid); if (!c) return;
   sides.forEach(function(side, idx) {
     var key = cid + '_' + side;
-    pS[key] = null; nS[key] = true;
+    painSt[key] = null; noneSt[key] = true;
     var row = document.createElement('div'); row.className = 'pain-row';
+
     var lbl = document.createElement('span'); lbl.className = 'pain-label';
     lbl.textContent = idx === 0 ? 'Pain' : ''; row.appendChild(lbl);
+
     var sl = document.createElement('span'); sl.className = 'pain-side';
     sl.textContent = sides.length > 1 ? side : ''; row.appendChild(sl);
+
     var nb = document.createElement('button');
     nb.className = 'none-btn on'; nb.id = key + '_none'; nb.textContent = 'None';
     var btns = document.createElement('div'); btns.className = 'pbs';
-    nb.onclick = function() { aN(key, btns, nb); };
+    nb.onclick = function() { clearPain(key, btns, nb); };
     row.appendChild(nb);
+
     for (var i = 1; i <= 10; i++) {
       (function(v) {
         var b = document.createElement('button'); b.className = 'pb2'; b.textContent = v;
-        b.onclick = function() { sPV(key, v, btns, nb); };
+        b.onclick = function() { setPain(key, v, btns, nb); };
         btns.appendChild(b);
       })(i);
     }
-    row.appendChild(btns); c.appendChild(row);
+    row.appendChild(btns);
+    c.appendChild(row);
   });
 }
 
-function aN(key, btnsEl, nb) {
-  nS[key] = true; pS[key] = null; nb.classList.add('on');
+function clearPain(key, btnsEl, nb) {
+  noneSt[key] = true; painSt[key] = null; nb.classList.add('on');
   btnsEl.querySelectorAll('.pb2').forEach(function(b) { b.classList.remove('al','am','ah'); });
 }
 
-function sPV(key, val, btnsEl, nb) {
-  nS[key] = false; nb.classList.remove('on');
+function setPain(key, val, btnsEl, nb) {
+  noneSt[key] = false; nb.classList.remove('on');
   btnsEl.querySelectorAll('.pb2').forEach(function(b) { b.classList.remove('al','am','ah'); });
-  if (pS[key] === val) { pS[key] = null; nS[key] = true; nb.classList.add('on'); return; }
-  pS[key] = val;
+  if (painSt[key] === val) { painSt[key] = null; noneSt[key] = true; nb.classList.add('on'); return; }
+  painSt[key] = val;
   btnsEl.querySelectorAll('.pb2').forEach(function(b) {
     var v = parseInt(b.textContent);
-    if (v <= val) { b.classList.add(v <= 3 ? 'al' : v <= 6 ? 'am' : 'ah'); }
+    if (v <= val) b.classList.add(v <= 3 ? 'al' : v <= 6 ? 'am' : 'ah');
   });
 }
 
-function tPM(id, type) {
-  var pos = document.getElementById(id+'_pos'), neg = document.getElementById(id+'_neg');
-  if (!pos || !neg) return;
-  var cur = slS[id];
-  pos.classList.remove('pos'); neg.classList.remove('neg');
-  if (type === 'neg') { slS[id] = (cur === 'neg') ? null : 'neg'; if (slS[id]) neg.classList.add('neg'); }
-  else { slS[id] = (cur === 'pos') ? null : 'pos'; if (slS[id]) pos.classList.add('pos'); }
-}
-
+// ── Squat normal toggle ───────────────────────────────────────
 function tN(id) {
-  var btn = document.getElementById('norm_'+id), inp = document.getElementById('abn_'+id);
-  norS[id] = !norS[id];
-  if (norS[id]) { btn.classList.add('on'); if (inp) { inp.value = ''; inp.disabled = true; inp.style.opacity = '0.35'; } }
-  else { btn.classList.remove('on'); if (inp) { inp.disabled = false; inp.style.opacity = '1'; } }
+  normSt[id] = !normSt[id];
+  var btn = document.getElementById('norm_' + id);
+  var inp = document.getElementById('abn_' + id);
+  if (btn) btn.classList.toggle('on', normSt[id]);
+  if (inp) { inp.disabled = normSt[id]; inp.style.opacity = normSt[id] ? '0.35' : '1'; if (normSt[id]) inp.value = ''; }
 }
 
 function mc(sel) { sel.classList.toggle('changed', sel.value !== 'WNL'); }
 
-// ── Collect all form data into one object ─────────────────────
+// ── Collect data ──────────────────────────────────────────────
+function gv(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function pain(key) { return painSt[key] !== null ? String(painSt[key]) : 'None'; }
+
 function collectData() {
-  function gv(id) { var el = document.getElementById(id); return el ? el.value : ''; }
-  function pain(key) { return pS[key] !== null ? String(pS[key]) : 'None'; }
-
-  // Pelvis — use whichever set of inputs is visible
-  var pInterp = gv('pelv_interpretation') || gv('pelv_interpretation_m');
-  var pTrue   = gv('pelv_true_lld')       || gv('pelv_true_lld_m');
-  var pAppar  = gv('pelv_apparent_lld')   || gv('pelv_apparent_lld_m');
-
-  var handed = '';
-  var hl = document.getElementById('handedL'), hr = document.getElementById('handedR');
-  if (hl && hl.checked) handed = 'L'; else if (hr && hr.checked) handed = 'R';
+  var pInterp = gv('pelv_interp')   || gv('pelv_interp_m');
+  var pTrue   = gv('pelv_true')     || gv('pelv_true_m');
+  var pAppar  = gv('pelv_appar')    || gv('pelv_appar_m');
 
   return {
-    playerName: gv('playerName'), dob: gv('dob'), team: gv('team'),
-    examDate: gv('examDate'), handed: handed, injuryHistory: gv('injuryHistory'),
-    // Cervical
-    cerv_flex: gv('cerv_flex'), cerv_ext: gv('cerv_ext'), cerv_fq: gv('cerv_fq'),
-    cerv_eq: gv('cerv_eq'), cerv_fc: gv('cerv_fc'),
-    pain_cerv_ps_L: pain('cerv_ps_L'), pain_cerv_ps_C: pain('cerv_ps_C'), pain_cerv_ps_R: pain('cerv_ps_R'),
-    notes_cerv: gv('notes_cerv'),
-    // Thoracic
-    thor_flex: gv('thor_flex'), thor_ext: gv('thor_ext'), thor_rot: gv('thor_rot'),
-    pain_thor_ps_L: pain('thor_ps_L'), pain_thor_ps_C: pain('thor_ps_C'), pain_thor_ps_R: pain('thor_ps_R'),
-    notes_thor: gv('notes_thor'),
-    // Lumbar
-    lumb_flex: gv('lumb_flex'), lumb_ext: gv('lumb_ext'), lumb_fq: gv('lumb_fq'),
-    lumb_ext_quad: gv('lumb_ext_quad'),
-    slump_r: slS['slump_r'] || '', slump_l: slS['slump_l'] || '',
-    pain_lumb_ps_L: pain('lumb_ps_L'), pain_lumb_ps_C: pain('lumb_ps_C'), pain_lumb_ps_R: pain('lumb_ps_R'),
-    notes_lumb: gv('notes_lumb'),
-    // Shoulder ROM
-    sh_elev_r: gv('sh_elev_r'), sh_elev_l: gv('sh_elev_l'),
-    sh_fir_r: gv('sh_fir_r'),   sh_fir_l: gv('sh_fir_l'),
-    sh_fer_r: gv('sh_fer_r'),   sh_fer_l: gv('sh_fer_l'),
-    sh_imp_r: gv('sh_imp_r'),   sh_imp_l: gv('sh_imp_l'),
-    pain_sh_r_ps_L: pain('sh_r_ps_L'), pain_sh_r_ps_R: pain('sh_r_ps_R'),
-    notes_sh_r: gv('notes_sh_r'),
-    // Shoulder Strength
-    sh_ff_r: gv('sh_ff_r'),   sh_ff_l: gv('sh_ff_l'),
-    sh_abd_r: gv('sh_abd_r'), sh_abd_l: gv('sh_abd_l'),
-    sh_ir_r: gv('sh_ir_r'),   sh_ir_l: gv('sh_ir_l'),
-    sh_er_r: gv('sh_er_r'),   sh_er_l: gv('sh_er_l'),
-    pain_sh_s_ps_L: pain('sh_s_ps_L'), pain_sh_s_ps_R: pain('sh_s_ps_R'),
-    notes_sh_s: gv('notes_sh_s'),
-    // Wrist
-    wr_flex_r: gv('wr_flex_r'), wr_flex_l: gv('wr_flex_l'),
-    wr_ext_r: gv('wr_ext_r'),   wr_ext_l: gv('wr_ext_l'),
-    wr_str_r: gv('wr_str_r'),   wr_str_l: gv('wr_str_l'),
-    pain_wr_ps_L: pain('wr_ps_L'), pain_wr_ps_R: pain('wr_ps_R'),
-    notes_wr: gv('notes_wr'),
-    // Pelvis
-    pelv_interpretation: pInterp, pelv_true_lld: pTrue, pelv_apparent_lld: pAppar,
-    pain_pelv_ps_C: pain('pelv_ps_C'),
-    notes_pelv: gv('notes_pelv'),
-    // Hip ROM
-    hip_ir_r: gv('hip_ir_r'),   hip_ir_l: gv('hip_ir_l'),
-    hip_er_r: gv('hip_er_r'),   hip_er_l: gv('hip_er_l'),
-    hip_fab_r: gv('hip_fab_r'), hip_fab_l: gv('hip_fab_l'),
-    hip_fad_r: gv('hip_fad_r'), hip_fad_l: gv('hip_fad_l'),
-    hip_th_r: gv('hip_th_r'),   hip_th_l: gv('hip_th_l'),
-    hip_tk_r: gv('hip_tk_r'),   hip_tk_l: gv('hip_tk_l'),
-    pain_hi_r_ps_L: pain('hi_r_ps_L'), pain_hi_r_ps_R: pain('hi_r_ps_R'),
-    notes_hi_r: gv('notes_hi_r'),
-    // Hip Strength
-    hip_sf_r: gv('hip_sf_r'),     hip_sf_l: gv('hip_sf_l'),
-    hip_sadd_r: gv('hip_sadd_r'), hip_sadd_l: gv('hip_sadd_l'),
-    hip_sabd_r: gv('hip_sabd_r'), hip_sabd_l: gv('hip_sabd_l'),
-    pain_hi_s_ps_L: pain('hi_s_ps_L'), pain_hi_s_ps_R: pain('hi_s_ps_R'),
-    notes_hi_s: gv('notes_hi_s'),
-    // Quad
-    quad_len_r: gv('quad_len_r'), quad_len_l: gv('quad_len_l'),
-    quad_str_r: gv('quad_str_r'), quad_str_l: gv('quad_str_l'),
-    pain_qu_ps_L: pain('qu_ps_L'), pain_qu_ps_R: pain('qu_ps_R'),
-    notes_qu: gv('notes_qu'),
-    // Hamstring
-    ham_len_r: gv('ham_len_r'), ham_len_l: gv('ham_len_l'),
-    ham_str_r: gv('ham_str_r'), ham_str_l: gv('ham_str_l'),
-    pain_ha_ps_L: pain('ha_ps_L'), pain_ha_ps_R: pain('ha_ps_R'),
-    notes_ha: gv('notes_ha'),
-    // Ankle
-    ank_ktw_r: gv('ank_ktw_r'), ank_ktw_l: gv('ank_ktw_l'),
-    ank_rom_r: gv('ank_rom_r'), ank_rom_l: gv('ank_rom_l'),
-    ank_ev_r: gv('ank_ev_r'),   ank_ev_l: gv('ank_ev_l'),
-    ank_inv_r: gv('ank_inv_r'), ank_inv_l: gv('ank_inv_l'),
-    pain_an_ps_L: pain('an_ps_L'), pain_an_ps_R: pain('an_ps_R'),
-    notes_an: gv('notes_an'),
-    // Resisted Quadrants
-    rq_leq: gv('rq_leq'), rq_lfq: gv('rq_lfq'),
-    rq_req: gv('rq_req'), rq_rfq: gv('rq_rfq'),
-    pain_rq_ps_L: pain('rq_ps_L'), pain_rq_ps_R: pain('rq_ps_R'),
-    notes_rq: gv('notes_rq'),
-    // Squat
-    squat_dl_normal:  String(norS['dl']  || false), squat_dl_findings:  gv('abn_dl'),
-    squat_slr_normal: String(norS['slr'] || false), squat_slr_findings: gv('abn_slr'),
-    squat_sll_normal: String(norS['sll'] || false), squat_sll_findings: gv('abn_sll'),
-    pain_sq_ps_L: pain('sq_ps_L'), pain_sq_ps_C: pain('sq_ps_C'), pain_sq_ps_R: pain('sq_ps_R'),
-    notes_sq: gv('notes_sq'),
-    // Summary
-    clinicalSummary: gv('clinicalSummary'), clinician: gv('clinician')
+    playerName:gv('playerName'), dob:gv('dob'), team:gv('team'),
+    examDate:gv('examDate'), handed:handedSt, injuryHistory:gv('injuryHistory'),
+    cerv_flex:gv('cerv_flex'), cerv_ext:gv('cerv_ext'), cerv_fq:gv('cerv_fq'), cerv_eq:gv('cerv_eq'), cerv_fc:gv('cerv_fc'),
+    pain_cerv_ps_L:pain('cerv_ps_L'), pain_cerv_ps_C:pain('cerv_ps_C'), pain_cerv_ps_R:pain('cerv_ps_R'), notes_cerv:gv('notes_cerv'),
+    thor_flex:gv('thor_flex'), thor_ext:gv('thor_ext'), thor_rot:gv('thor_rot'),
+    pain_thor_ps_L:pain('thor_ps_L'), pain_thor_ps_C:pain('thor_ps_C'), pain_thor_ps_R:pain('thor_ps_R'), notes_thor:gv('notes_thor'),
+    lumb_flex:gv('lumb_flex'), lumb_ext:gv('lumb_ext'), lumb_fq:gv('lumb_fq'), lumb_ext_quad:gv('lumb_ext_quad'),
+    slump_r:slumpSt['slump_r']||'', slump_l:slumpSt['slump_l']||'',
+    pain_lumb_ps_L:pain('lumb_ps_L'), pain_lumb_ps_C:pain('lumb_ps_C'), pain_lumb_ps_R:pain('lumb_ps_R'), notes_lumb:gv('notes_lumb'),
+    sh_elev_r:gv('sh_elev_r'), sh_elev_l:gv('sh_elev_l'), sh_fir_r:gv('sh_fir_r'), sh_fir_l:gv('sh_fir_l'),
+    sh_fer_r:gv('sh_fer_r'), sh_fer_l:gv('sh_fer_l'), sh_imp_r:gv('sh_imp_r'), sh_imp_l:gv('sh_imp_l'),
+    pain_sh_r_ps_L:pain('sh_r_ps_L'), pain_sh_r_ps_R:pain('sh_r_ps_R'), notes_sh_r:gv('notes_sh_r'),
+    sh_ff_r:gv('sh_ff_r'), sh_ff_l:gv('sh_ff_l'), sh_abd_r:gv('sh_abd_r'), sh_abd_l:gv('sh_abd_l'),
+    sh_ir_r:gv('sh_ir_r'), sh_ir_l:gv('sh_ir_l'), sh_er_r:gv('sh_er_r'), sh_er_l:gv('sh_er_l'),
+    pain_sh_s_ps_L:pain('sh_s_ps_L'), pain_sh_s_ps_R:pain('sh_s_ps_R'), notes_sh_s:gv('notes_sh_s'),
+    wr_flex_r:gv('wr_flex_r'), wr_flex_l:gv('wr_flex_l'), wr_ext_r:gv('wr_ext_r'), wr_ext_l:gv('wr_ext_l'),
+    wr_str_r:gv('wr_str_r'), wr_str_l:gv('wr_str_l'),
+    pain_wr_ps_L:pain('wr_ps_L'), pain_wr_ps_R:pain('wr_ps_R'), notes_wr:gv('notes_wr'),
+    pelv_interpretation:pInterp, pelv_true_lld:pTrue, pelv_apparent_lld:pAppar,
+    pain_pelv_ps_C:pain('pelv_ps_C'), notes_pelv:gv('notes_pelv'),
+    hip_ir_r:gv('hip_ir_r'), hip_ir_l:gv('hip_ir_l'), hip_er_r:gv('hip_er_r'), hip_er_l:gv('hip_er_l'),
+    hip_fab_r:gv('hip_fab_r'), hip_fab_l:gv('hip_fab_l'), hip_fad_r:gv('hip_fad_r'), hip_fad_l:gv('hip_fad_l'),
+    hip_th_r:gv('hip_th_r'), hip_th_l:gv('hip_th_l'), hip_tk_r:gv('hip_tk_r'), hip_tk_l:gv('hip_tk_l'),
+    pain_hi_r_ps_L:pain('hi_r_ps_L'), pain_hi_r_ps_R:pain('hi_r_ps_R'), notes_hi_r:gv('notes_hi_r'),
+    hip_sf_r:gv('hip_sf_r'), hip_sf_l:gv('hip_sf_l'), hip_sadd_r:gv('hip_sadd_r'), hip_sadd_l:gv('hip_sadd_l'),
+    hip_sabd_r:gv('hip_sabd_r'), hip_sabd_l:gv('hip_sabd_l'),
+    pain_hi_s_ps_L:pain('hi_s_ps_L'), pain_hi_s_ps_R:pain('hi_s_ps_R'), notes_hi_s:gv('notes_hi_s'),
+    quad_len_r:gv('quad_len_r'), quad_len_l:gv('quad_len_l'), quad_str_r:gv('quad_str_r'), quad_str_l:gv('quad_str_l'),
+    pain_qu_ps_L:pain('qu_ps_L'), pain_qu_ps_R:pain('qu_ps_R'), notes_qu:gv('notes_qu'),
+    ham_len_r:gv('ham_len_r'), ham_len_l:gv('ham_len_l'), ham_str_r:gv('ham_str_r'), ham_str_l:gv('ham_str_l'),
+    pain_ha_ps_L:pain('ha_ps_L'), pain_ha_ps_R:pain('ha_ps_R'), notes_ha:gv('notes_ha'),
+    ank_ktw_r:gv('ank_ktw_r'), ank_ktw_l:gv('ank_ktw_l'), ank_rom_r:gv('ank_rom_r'), ank_rom_l:gv('ank_rom_l'),
+    ank_ev_r:gv('ank_ev_r'), ank_ev_l:gv('ank_ev_l'), ank_inv_r:gv('ank_inv_r'), ank_inv_l:gv('ank_inv_l'),
+    pain_an_ps_L:pain('an_ps_L'), pain_an_ps_R:pain('an_ps_R'), notes_an:gv('notes_an'),
+    rq_leq:gv('rq_leq'), rq_lfq:gv('rq_lfq'), rq_req:gv('rq_req'), rq_rfq:gv('rq_rfq'),
+    pain_rq_ps_L:pain('rq_ps_L'), pain_rq_ps_R:pain('rq_ps_R'), notes_rq:gv('notes_rq'),
+    squat_dl_normal:String(!!normSt['dl']),   squat_dl_findings:gv('abn_dl'),
+    squat_slr_normal:String(!!normSt['slr']), squat_slr_findings:gv('abn_slr'),
+    squat_sll_normal:String(!!normSt['sll']), squat_sll_findings:gv('abn_sll'),
+    pain_sq_ps_L:pain('sq_ps_L'), pain_sq_ps_C:pain('sq_ps_C'), pain_sq_ps_R:pain('sq_ps_R'), notes_sq:gv('notes_sq'),
+    clinicalSummary:gv('clinicalSummary'), clinician:gv('clinician')
   };
 }
 
 // ── localStorage queue ────────────────────────────────────────
-function loadQueue() {
-  try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }
-  catch(e) { return []; }
-}
-function saveQueue(q) {
-  try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch(e) {}
-}
-function enqueue(data) {
-  var q = loadQueue();
-  q.push({ data: data, ts: Date.now(), synced: false });
-  saveQueue(q);
-  updateSyncStatus();
-}
+function loadQueue() { try { return JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]'); } catch(e) { return []; } }
+function saveQueue(q) { try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch(e) {} }
+function enqueue(data) { var q=loadQueue(); q.push({data:data,ts:Date.now(),synced:false}); saveQueue(q); updateSyncStatus(); }
 
-// ── Sync to Sheets ────────────────────────────────────────────
+// ── Sync ──────────────────────────────────────────────────────
 var isSyncing = false;
-
 function flushQueue() {
-  if (isSyncing || ENDPOINT === https://script.google.com/a/macros/warriors.com/s/AKfycbwwEJipUg4fXs7II3KaYqu0Tlc85qebXVRBt1cLrPmjaBk63d_7LWcgvlz4RRFDuCTq/exec) return;
-  var q = loadQueue().filter(function(r) { return !r.synced; });
-  if (!q.length) { updateSyncStatus(); return; }
-  isSyncing = true;
-  updateSyncStatus('syncing');
-
-  var allQ = loadQueue();
-  var pending = allQ.filter(function(r){ return !r.synced; });
+  if (isSyncing || ENDPOINT === 'YOUR_APPS_SCRIPT_ENDPOINT_URL_HERE') return;
+  var pending = loadQueue().filter(function(r){ return !r.synced; });
+  if (!pending.length) { updateSyncStatus(); return; }
+  isSyncing = true; updateSyncStatus('syncing');
   var idx = 0;
-
   function next() {
-    if (idx >= pending.length) {
-      isSyncing = false;
-      updateSyncStatus();
-      return;
-    }
-    var record = pending[idx];
-    fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(record.data)
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(res) {
-      if (res.status === 'ok') {
-        // mark as synced in the full queue by timestamp
-        var full = loadQueue();
-        full.forEach(function(r) { if (r.ts === record.ts) r.synced = true; });
-        saveQueue(full);
-      }
-      idx++; next();
-    })
-    .catch(function() {
-      isSyncing = false;
-      updateSyncStatus('error');
-    });
+    if (idx >= pending.length) { isSyncing = false; updateSyncStatus(); return; }
+    var rec = pending[idx];
+    fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(rec.data) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res.status === 'ok') {
+          var all = loadQueue();
+          all.forEach(function(r){ if (r.ts === rec.ts) r.synced = true; });
+          saveQueue(all);
+        }
+        idx++; next();
+      })
+      .catch(function(){ isSyncing = false; updateSyncStatus('error'); });
   }
   next();
 }
 
 function updateSyncStatus(state) {
-  var dot  = document.getElementById('syncDot');
-  var text = document.getElementById('syncText');
-  var btn  = document.getElementById('syncRetryBtn');
-  var q = loadQueue().filter(function(r){ return !r.synced; });
-
+  var dot=document.getElementById('syncDot'), txt=document.getElementById('syncText'), btn=document.getElementById('syncRetryBtn');
+  var pending = loadQueue().filter(function(r){ return !r.synced; });
   dot.className = 'sync-dot';
-  if (state === 'syncing') {
-    dot.classList.add('pending');
-    text.textContent = 'Syncing to Google Sheets…';
-    btn.style.display = 'none';
-  } else if (state === 'error' || q.length > 0) {
-    dot.classList.add(q.length > 0 ? 'pending' : 'error');
-    text.textContent = q.length + ' record' + (q.length !== 1 ? 's' : '') + ' pending sync';
-    btn.style.display = 'block';
-  } else {
-    dot.classList.add('ok');
-    text.textContent = 'All records synced';
-    btn.style.display = 'none';
-  }
+  if (state==='syncing') { dot.classList.add('pending'); txt.textContent='Syncing to Google Sheets…'; btn.style.display='none'; }
+  else if (state==='error'||pending.length) { dot.classList.add(pending.length?'pending':'error'); txt.textContent=pending.length+' record'+(pending.length!==1?'s':'')+' pending sync'; btn.style.display='block'; }
+  else { dot.classList.add('ok'); txt.textContent='All records synced'; btn.style.display='none'; }
 }
 
-// ── Save record ───────────────────────────────────────────────
+// ── Save ──────────────────────────────────────────────────────
 function saveRecord() {
-  var name = (document.getElementById('playerName').value || '').trim();
-  if (!name) {
-    showToast('Please enter a player name before saving.', 'error');
-    return;
-  }
-  var btn = document.getElementById('saveBtn');
-  btn.disabled = true;
-
-  var data = collectData();
-  enqueue(data);                      // save locally immediately
-  flushQueue();                       // attempt Sheets sync
-  showToast('Saved locally for ' + name + '. Syncing to Sheets…', 'ok');
+  var name = gv('playerName');
+  if (!name) { showToast('Please enter a player name before saving.','error'); return; }
+  var btn = document.getElementById('saveBtn'); btn.disabled = true;
+  enqueue(collectData());
+  flushQueue();
+  showToast('Saved for '+name+'. Syncing to Sheets…','ok');
   btn.disabled = false;
 }
 
-// ── Clear form ────────────────────────────────────────────────
+// ── Clear ─────────────────────────────────────────────────────
 function clearForm() {
-  if (!confirm('Clear all fields? The current record has already been saved locally.')) return;
+  if (!confirm('Clear all fields? The record has already been saved locally.')) return;
 
-  // Text inputs + textareas + selects
-  document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(function(el) {
-    el.value = '';
-  });
-  document.querySelectorAll('select').forEach(function(el) {
-    el.value = 'WNL'; el.classList.remove('changed');
-  });
-  document.querySelectorAll('input[type=radio]').forEach(function(el) {
-    el.checked = false;
+  // Text, date, textarea fields
+  document.querySelectorAll('input[type=text],input[type=date],textarea').forEach(function(el){ el.value=''; });
+
+  // Selects back to WNL
+  document.querySelectorAll('select').forEach(function(el){ el.value='WNL'; el.classList.remove('changed'); });
+
+  // Handed
+  handedSt = '';
+  ['L','R'].forEach(function(s){ var b=document.getElementById('handed_'+s); if(b) b.classList.remove('on'); });
+
+  // Slump
+  ['slump_r','slump_l'].forEach(function(id){
+    slumpSt[id] = null;
+    ['pos','neg'].forEach(function(t){ var b=document.getElementById(id+'_'+t); if(b) b.classList.remove('on'); });
   });
 
-  // Reset pain buttons
-  Object.keys(pS).forEach(function(key) {
-    pS[key] = null; nS[key] = true;
-    var nb = document.getElementById(key + '_none');
+  // Pain — reset all sections
+  Object.keys(painSt).forEach(function(key){
+    painSt[key] = null; noneSt[key] = true;
+    var nb = document.getElementById(key+'_none');
     if (nb) nb.classList.add('on');
   });
-  document.querySelectorAll('.pb2').forEach(function(b) {
-    b.classList.remove('al','am','ah');
+  document.querySelectorAll('.pb2').forEach(function(b){ b.classList.remove('al','am','ah'); });
+
+  // Squat normal buttons
+  ['dl','slr','sll'].forEach(function(id){
+    normSt[id] = false;
+    var btn=document.getElementById('norm_'+id); if(btn) btn.classList.remove('on');
+    var inp=document.getElementById('abn_'+id); if(inp){ inp.disabled=false; inp.style.opacity='1'; inp.value=''; }
   });
 
-  // Reset slump
-  ['slump_r','slump_l'].forEach(function(id) {
-    slS[id] = null;
-    ['pos','neg'].forEach(function(t) {
-      var b = document.getElementById(id+'_'+t);
-      if (b) { b.classList.remove('pos','neg'); }
-    });
-  });
-
-  // Reset normal buttons
-  ['dl','slr','sll'].forEach(function(id) {
-    norS[id] = false;
-    var btn = document.getElementById('norm_'+id);
-    if (btn) btn.classList.remove('on');
-    var inp = document.getElementById('abn_'+id);
-    if (inp) { inp.disabled = false; inp.style.opacity = '1'; inp.value = ''; }
-  });
-
-  showToast('Form cleared. Ready for next player.', 'ok');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('Form cleared. Ready for next player.','ok');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── Toast notification ────────────────────────────────────────
+// ── Toast ─────────────────────────────────────────────────────
 function showToast(msg, type) {
-  var existing = document.getElementById('toast');
-  if (existing) existing.remove();
-  var t = document.createElement('div');
-  t.id = 'toast';
-  t.textContent = msg;
-  t.style.cssText = [
-    'position:fixed;bottom:24px;left:50%;transform:translateX(-50%)',
-    'padding:10px 18px;border-radius:8px;font-size:13px;z-index:9999',
-    'max-width:90vw;text-align:center;pointer-events:none',
-    type === 'error'
-      ? 'background:#fcebeb;color:#a32d2d;border:0.5px solid #e24b4a'
-      : 'background:#eaf3de;color:#3b6d11;border:0.5px solid #97c459'
-  ].join(';');
+  var ex=document.getElementById('toast'); if(ex) ex.remove();
+  var t=document.createElement('div'); t.id='toast'; t.textContent=msg;
+  var isErr = type==='error';
+  t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 20px;border-radius:8px;font-size:13px;z-index:9999;max-width:90vw;text-align:center;pointer-events:none;'+(isErr?'background:#fcebeb;color:#a32d2d;border:0.5px solid #e24b4a':'background:#eaf3de;color:#3b6d11;border:0.5px solid #97c459');
   document.body.appendChild(t);
-  setTimeout(function() { if (t.parentNode) t.remove(); }, 3500);
+  setTimeout(function(){ if(t.parentNode) t.remove(); },3500);
 }
 
-// ── Online/offline listeners ──────────────────────────────────
-window.addEventListener('online',  function() { flushQueue(); });
-window.addEventListener('offline', function() { updateSyncStatus('error'); });
+// ── Online / offline ──────────────────────────────────────────
+window.addEventListener('online',  function(){ flushQueue(); });
+window.addEventListener('offline', function(){ updateSyncStatus('error'); });
 
 // ── Init ──────────────────────────────────────────────────────
-Object.keys(PC).forEach(function(id) { bPS(id, PC[id]); });
+Object.keys(PC).forEach(function(id){ bPS(id, PC[id]); });
 updateSyncStatus();
-
-// Auto-retry any unsynced records on load
 setTimeout(flushQueue, 1500);
 </script>
 </body>
