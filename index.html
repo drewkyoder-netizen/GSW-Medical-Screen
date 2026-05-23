@@ -474,12 +474,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <select id="wr_exs_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
         <select id="wr_exs_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
       </div>
+      <div class="rom-table-hdr" style="grid-template-columns:160px 1fr 1fr 1fr 1fr;margin-top:6px"><span></span><span>Pron Str L</span><span>Pron Str R</span><span>Sup Str L</span><span>Sup Str R</span></div>
+      <div class="rom-table-row" style="grid-template-columns:160px 1fr 1fr 1fr 1fr">
+        <span class="rl">Pro / Sup</span>
+        <select id="wr_pros_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_pros_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_sups_l" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+        <select id="wr_sups_r" onchange="mc(this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select>
+      </div>
     </div>
     <div class="rom-mobile">
       <div class="rom-mobile-row"><div class="rom-mobile-label">Flexion ROM</div><div class="rom-mobile-selects"><div class="rom-mobile-sel-wrap"><span>Left</span><select id="wr_flex_l_m" onchange="syncM('wr_flex_l',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div><div class="rom-mobile-sel-wrap"><span>Right</span><select id="wr_flex_r_m" onchange="syncM('wr_flex_r',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div></div>
       <div class="rom-mobile-row"><div class="rom-mobile-label">Extension ROM</div><div class="rom-mobile-selects"><div class="rom-mobile-sel-wrap"><span>Left</span><select id="wr_ext_l_m" onchange="syncM('wr_ext_l',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div><div class="rom-mobile-sel-wrap"><span>Right</span><select id="wr_ext_r_m" onchange="syncM('wr_ext_r',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div></div>
       <div class="rom-mobile-row"><div class="rom-mobile-label">Flexion Strength</div><div class="rom-mobile-selects"><div class="rom-mobile-sel-wrap"><span>Left</span><select id="wr_fls_l_m" onchange="syncM('wr_fls_l',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div><div class="rom-mobile-sel-wrap"><span>Right</span><select id="wr_fls_r_m" onchange="syncM('wr_fls_r',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div></div>
       <div class="rom-mobile-row"><div class="rom-mobile-label">Extension Strength</div><div class="rom-mobile-selects"><div class="rom-mobile-sel-wrap"><span>Left</span><select id="wr_exs_l_m" onchange="syncM('wr_exs_l',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div><div class="rom-mobile-sel-wrap"><span>Right</span><select id="wr_exs_r_m" onchange="syncM('wr_exs_r',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div></div>
+      <div class="rom-mobile-row"><div class="rom-mobile-label">Pronation Strength</div><div class="rom-mobile-selects"><div class="rom-mobile-sel-wrap"><span>Left</span><select id="wr_pros_l_m" onchange="syncM('wr_pros_l',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div><div class="rom-mobile-sel-wrap"><span>Right</span><select id="wr_pros_r_m" onchange="syncM('wr_pros_r',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div></div>
+      <div class="rom-mobile-row"><div class="rom-mobile-label">Supination Strength</div><div class="rom-mobile-selects"><div class="rom-mobile-sel-wrap"><span>Left</span><select id="wr_sups_l_m" onchange="syncM('wr_sups_l',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div><div class="rom-mobile-sel-wrap"><span>Right</span><select id="wr_sups_r_m" onchange="syncM('wr_sups_r',this)"><option>WNL</option><option>↓+</option><option>↓++</option><option>↓+++</option></select></div></div></div>
     </div>
     <div class="pain-section" id="wr_ps"></div>
     <textarea class="notes-box" id="notes_wr" placeholder="Notes…"></textarea>
@@ -878,6 +888,7 @@ function collectData(){
     // Wrist
     wr_flex_l:gv('wr_flex_l'),wr_flex_r:gv('wr_flex_r'),wr_ext_l:gv('wr_ext_l'),wr_ext_r:gv('wr_ext_r'),
     wr_fls_l:gv('wr_fls_l'),wr_fls_r:gv('wr_fls_r'),wr_exs_l:gv('wr_exs_l'),wr_exs_r:gv('wr_exs_r'),
+    wr_pros_l:gv('wr_pros_l'),wr_pros_r:gv('wr_pros_r'),wr_sups_l:gv('wr_sups_l'),wr_sups_r:gv('wr_sups_r'),
     pain_wr_ps_L:pain('wr_ps_L'),pain_wr_ps_R:pain('wr_ps_R'),notes_wr:gv('notes_wr'),
     // Pelvis (no pain score, dropdown)
     pelv_interpretation:gv('pelv_interp'),notes_pelv:gv('notes_pelv'),
